@@ -38,6 +38,19 @@ flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
+
+allow_classes_ = ['person','car','motorbike','bus','bicycle','truck']
+allowed_classes_map = {
+  'person' : 0,
+  'car' : 0,
+  'motorbike' : 0,
+  'bus' : 0,
+  'bicycle' : 0,
+  'truck' : 0
+}
+collected_id = set()
+
+
 def main(_argv):
     # Definition of the parameters
     max_cosine_distance = 0.4
@@ -207,6 +220,10 @@ def main(_argv):
             bbox = track.to_tlbr()
             class_name = track.get_class()
             
+            if track.track_id not in collected_id:
+              allowed_classes_map[class_name]+=1
+              collected_id.add(track.track_id)
+            
         # draw bbox on screen
             color = colors[int(track.track_id) % len(colors)]
             color = [i * 255 for i in color]
@@ -217,7 +234,10 @@ def main(_argv):
         # if enable info flag then print details about each track
             if FLAGS.info:
                 print("Tracker ID: {}, Class: {},  BBox Coords (xmin, ymin, xmax, ymax): {}".format(str(track.track_id), class_name, (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))))
-
+        
+        with open("counter.txt","w") as cnt:
+          cnt.write(str(allowed_classes_map))
+        
         # calculate frames per second of running detections
         fps = 1.0 / (time.time() - start_time)
         print("FPS: %.2f" % fps)
