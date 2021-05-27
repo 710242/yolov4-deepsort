@@ -38,14 +38,8 @@ flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
-allowed_classes_map = {
-  'person' : 0,
-  'car' : 0,
-  'motorbike' : 0,
-  'bus' : 0,
-  'bicycle' : 0,
-  'truck' : 0
-}
+allowed_classes = ['person','car','motorbike','bus','bicycle','truck']
+allowed_classes_map = {allowed_classes[i]:0 for i in range(len(allowed_classes))}
 collected_id = set()
 
 def main(_argv):
@@ -170,7 +164,7 @@ def main(_argv):
         # allowed_classes = list(class_names.values())
         
         # custom allowed classes (uncomment line below to customize tracker for only people)
-        allowed_classes = ['person','car','motorbike','bus','bicycle','truck']
+        allowed_classes = allowed_classes
 
         # loop through objects and use class index to get class name, allow only classes in allowed_classes list
         names = []
